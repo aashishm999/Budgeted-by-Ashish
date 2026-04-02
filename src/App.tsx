@@ -234,7 +234,7 @@ export default function App() {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md w-full bg-zinc-50/50 dark:bg-white/5 backdrop-blur-2xl p-8 sm:p-12 rounded-[48px] shadow-2xl border border-zinc-200 dark:border-white/10 relative z-10"
         >
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-indigo-500 to-fuchsia-500 rounded-[32px] flex items-center justify-center mx-auto mb-8 sm:mb-10 shadow-2xl shadow-indigo-500/20">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-linear-to-br from-indigo-500 to-fuchsia-500 rounded-4xl flex items-center justify-center mx-auto mb-8 sm:mb-10 shadow-2xl shadow-indigo-500/20">
             <Wallet className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4 text-zinc-900 dark:text-white font-display">Budgeted</h1>
@@ -255,7 +255,7 @@ export default function App() {
     <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 font-sans selection:bg-indigo-100 selection:text-indigo-900 relative overflow-hidden transition-colors duration-300">
       {/* Debug Overlay */}
       {process.env.NODE_ENV !== 'production' && (
-        <div className="fixed bottom-4 right-4 z-[100] bg-black/80 text-white p-4 rounded-2xl text-[10px] font-mono max-w-xs pointer-events-none">
+        <div className="fixed bottom-4 right-4 z-100 bg-black/80 text-white p-4 rounded-2xl text-[10px] font-mono max-w-xs pointer-events-none">
           <p className="font-bold mb-1 text-indigo-400">DEBUG INFO</p>
           <p>Groups: {groups.length}</p>
           <p>User: {user.uid.slice(0, 8)}...</p>
@@ -290,7 +290,7 @@ export default function App() {
         <div className="p-8 relative z-10 shrink-0">
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-fuchsia-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <div className="w-10 h-10 bg-linear-to-br from-indigo-500 to-fuchsia-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
                 <Wallet className="w-6 h-6 text-white" />
               </div>
               <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white font-display">Budgeted</span>
@@ -317,7 +317,7 @@ export default function App() {
           </nav>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-2 relative z-10 custom-scrollbar min-h-[200px]">
+        <div className="flex-1 overflow-y-auto px-4 py-2 relative z-10 custom-scrollbar min-h-50">
           <div className="flex items-center justify-between px-4 mb-4">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500">Your Groups</span>
             <button 
@@ -390,7 +390,7 @@ export default function App() {
         {/* Mobile Header */}
         <div className="lg:hidden flex items-center justify-between p-4 bg-zinc-950 border-b border-white/5 sticky top-0 z-30">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-fuchsia-500 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-linear-to-br from-indigo-500 to-fuchsia-500 rounded-lg flex items-center justify-center">
               <Wallet className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-white font-display">Budgeted</span>

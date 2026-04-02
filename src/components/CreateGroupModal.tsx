@@ -97,7 +97,7 @@ export default function CreateGroupModal({ isOpen, onClose, user }: CreateGroupM
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
-            className="relative w-full max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[32px] shadow-2xl overflow-y-auto max-h-[90vh] outline-none"
+            className="relative w-full max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-4xl shadow-2xl overflow-y-auto max-h-[90vh] outline-none"
             tabIndex={-1}
           >
             <div className="p-10">
@@ -201,7 +201,7 @@ export default function CreateGroupModal({ isOpen, onClose, user }: CreateGroupM
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-5 bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-2xl font-bold hover:from-indigo-700 hover:to-violet-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-4 shadow-xl shadow-indigo-500/20 active:scale-[0.98] outline-none focus:ring-4 focus:ring-indigo-500/40"
+                  className="w-full py-5 bg-linear-to-br from-indigo-600 to-violet-600 text-white rounded-2xl font-bold hover:from-indigo-700 hover:to-violet-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-4 shadow-xl shadow-indigo-500/20 active:scale-[0.98] outline-none focus:ring-4 focus:ring-indigo-500/40"
                 >
                   {isSubmitting ? 'Creating...' : 'Create Group'}
                 </button>

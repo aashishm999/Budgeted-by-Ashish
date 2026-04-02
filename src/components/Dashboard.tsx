@@ -250,7 +250,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
               setIsGroupsListOpen(true);
             }
           }}
-          className={`text-left bg-indigo-600 p-8 rounded-[32px] shadow-lg shadow-indigo-500/40 relative overflow-hidden group transition-all ${groups.length > 0 ? 'hover:scale-[1.02] active:scale-95 cursor-pointer' : 'cursor-default'}`}
+          className={`text-left bg-indigo-600 p-8 rounded-4xl shadow-lg shadow-indigo-500/40 relative overflow-hidden group transition-all ${groups.length > 0 ? 'hover:scale-[1.02] active:scale-95 cursor-pointer' : 'cursor-default'}`}
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
           <div className="relative z-10">
@@ -267,7 +267,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
             if (recentExpenses.length === 0) return;
             onSelectGroup(recentExpenses[0].groupId);
           }}
-          className={`text-left bg-emerald-600 p-8 rounded-[32px] shadow-lg shadow-emerald-500/40 relative overflow-hidden group transition-all ${recentExpenses.length > 0 ? 'hover:scale-[1.02] active:scale-95 cursor-pointer' : 'cursor-default'}`}
+          className={`text-left bg-emerald-600 p-8 rounded-4xl shadow-lg shadow-emerald-500/40 relative overflow-hidden group transition-all ${recentExpenses.length > 0 ? 'hover:scale-[1.02] active:scale-95 cursor-pointer' : 'cursor-default'}`}
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
           <div className="relative z-10">
@@ -284,7 +284,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
             if (alerts.length === 0) return;
             onSelectGroup(alerts[0].groupId);
           }}
-          className={`text-left bg-fuchsia-600 p-8 rounded-[32px] shadow-lg shadow-fuchsia-500/40 relative overflow-hidden group transition-all ${alerts.length > 0 ? 'hover:scale-[1.02] active:scale-95 cursor-pointer' : 'cursor-default'}`}
+          className={`text-left bg-fuchsia-600 p-8 rounded-4xl shadow-lg shadow-fuchsia-500/40 relative overflow-hidden group transition-all ${alerts.length > 0 ? 'hover:scale-[1.02] active:scale-95 cursor-pointer' : 'cursor-default'}`}
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
           <div className="relative z-10">
@@ -299,7 +299,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
 
       <AnimatePresence>
         {isGroupsListOpen && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -316,7 +316,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[32px] shadow-2xl overflow-hidden outline-none"
+              className="relative w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-4xl shadow-2xl overflow-hidden outline-none"
             >
               <div className="p-8">
                 <h3 id="select-group-title" className="text-xl font-bold text-zinc-900 dark:text-white mb-6 font-display">Select a Group</h3>
@@ -350,7 +350,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white font-display">Recent Activity</h2>
             </div>
-            <div className="bg-white dark:bg-zinc-900 rounded-[32px] border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-black/20 overflow-hidden">
+            <div className="bg-white dark:bg-zinc-900 rounded-4xl border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-black/20 overflow-hidden">
               {recentExpenses.length === 0 ? (
                 <div className="p-16 text-center">
                   <div className="w-16 h-16 bg-zinc-50 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -373,7 +373,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
                             <span className="text-[9px] sm:text-[10px] text-zinc-500 font-mono font-bold">
                               {expense.date.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                             </span>
-                            <span className="text-[9px] sm:text-[10px] text-zinc-400 font-medium italic truncate max-w-[100px] sm:max-w-none">
+                            <span className="text-[9px] sm:text-[10px] text-zinc-400 font-medium italic truncate max-w-100px sm:max-w-none">
                               in {groups.find(g => g.id === expense.groupId)?.name}
                             </span>
                           </div>
@@ -425,7 +425,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
             </div>
             <div className="space-y-4">
               {alerts.length === 0 ? (
-                <div className="p-10 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-[32px] text-center shadow-xl shadow-zinc-200/50 dark:shadow-black/20">
+                <div className="p-10 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-4xl text-center shadow-xl shadow-zinc-200/50 dark:shadow-black/20">
                   <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-3">
                     <TrendingDown className="w-6 h-6 text-emerald-500" />
                   </div>
@@ -437,7 +437,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
                     key={alert.id}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className={`p-6 rounded-[32px] border shadow-md transition-all duration-300 ${
+                    className={`p-6 rounded-4xl border shadow-md transition-all duration-300 ${
                       alert.type === 'warning' 
                         ? 'bg-red-50 dark:bg-red-950/80 border-red-200 dark:border-red-900/50 text-red-900 dark:text-red-100 backdrop-blur-sm' 
                         : 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20'
@@ -462,7 +462,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
       {/* Modals */}
       <AnimatePresence>
         {editingExpense && (
-          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-70 flex items-center justify-center p-4">
             <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
@@ -555,7 +555,7 @@ export default function Dashboard({ user, groups, onSelectGroup, theme }: Dashbo
         )}
 
         {expenseToDelete && (
-          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-70 flex items-center justify-center p-4">
             <motion.div 
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
