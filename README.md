@@ -6,7 +6,12 @@
 </div>
 
 ## 🌟 Overview
-**Budgeted** is a modern, full-stack financial management application designed for individuals and groups. Whether you are managing household bills, tracking travel expenses with friends, or monitoring your personal budget, Budgeted provides a clean, professional interface with real-time updates and AI-powered insights.
+**Budgeted** is a modern, full-stack financial management application. It provides a centralized dashboard to monitor all your group activities, recent expenses, and budget alerts at a glance.
+
+<div align="center">
+  <img src="./screenshots/image_cd84a1.png" alt="Budgeted Dashboard Overview" width="800px" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+  <p><i>The sleek, dark-mode Dashboard showing real-time expense tracking and activity.</i></p>
+</div>
 
 ## ✨ Key Features
 * **Real-time Collaboration**: Manage shared expenses within groups (Household, Trips, Personal) with instant updates across all members.
