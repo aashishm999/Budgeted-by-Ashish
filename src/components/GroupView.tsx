@@ -402,19 +402,19 @@ export default function GroupView({
         Be concise, professional, and friendly.
         
         Current Context:
-        - Total Spent: ${CURRENCY_SYMBOL}${formatCurrency(totalSpent)}
-        - Max Budget: ${group?.maxBudget ? `${CURRENCY_SYMBOL}${formatCurrency(group.maxBudget)} (${group.budgetType})` : "No limit"}
+        - Total Spent: {CURRENCY_SYMBOL}${formatCurrency(totalSpent)}
+        - Max Budget: ${group?.maxBudget ? `{CURRENCY_SYMBOL}${formatCurrency(group.maxBudget)} (${group.budgetType})` : "No limit"}
         - Categories: ${Object.entries(categoryTotals)
           .map(
             ([cat, amount]) =>
-              `${cat}: ${CURRENCY_SYMBOL}${formatCurrency(amount)}`,
+              `${cat}: {CURRENCY_SYMBOL}${formatCurrency(amount)}`,
           )
           .join(", ")}
         - Recent Expenses: ${expenses
           .slice(0, 5)
           .map(
             (e) =>
-              `${e.description}: ${CURRENCY_SYMBOL}${formatCurrency(e.amount)}`,
+              `${e.description}: {CURRENCY_SYMBOL}${formatCurrency(e.amount)}`,
           )
           .join(", ")}`;
 
@@ -833,7 +833,7 @@ export default function GroupView({
             </p>
             <p
               className="text-4xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-zinc-900 dark:text-white font-display tracking-tight truncate"
-              title={`${CURRENCY_SYMBOL}${formatCurrency(totalSpent)}`}
+              title={`{CURRENCY_SYMBOL}{formatCurrency(totalSpent)}`}
             >
               {CURRENCY_SYMBOL}
               {formatCurrency(totalSpent)}
@@ -863,8 +863,8 @@ export default function GroupView({
                   />
                 </div>
                 <p className="text-[10px] text-zinc-500 mt-2 font-medium">
-                  ${CURRENCY_SYMBOL}
-                  {formatCurrency(currentBudgetSpent)} of ${CURRENCY_SYMBOL}
+                  {CURRENCY_SYMBOL}
+                  {formatCurrency(currentBudgetSpent)} of {CURRENCY_SYMBOL}
                   {formatCurrency(group.maxBudget)}
                 </p>
               </div>
@@ -888,7 +888,7 @@ export default function GroupView({
             </p>
             <p
               className="text-4xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-zinc-900 dark:text-white font-display tracking-tight truncate"
-              title={`${CURRENCY_SYMBOL}${formatCurrency(perPerson)}`}
+              title={`{CURRENCY_SYMBOL}{formatCurrency(perPerson)}`}
             >
               {CURRENCY_SYMBOL}
               {formatCurrency(perPerson)}
@@ -917,7 +917,7 @@ export default function GroupView({
             </p>
             <p
               className={`text-4xl md:text-2xl lg:text-3xl xl:text-4xl font-bold font-display tracking-tight truncate ${balance >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}
-              title={`${CURRENCY_SYMBOL}${formatCurrency(Math.abs(balance))}`}
+              title={`{CURRENCY_SYMBOL}{formatCurrency(Math.abs(balance))}`}
             >
               {CURRENCY_SYMBOL}
               {formatCurrency(Math.abs(balance))}
@@ -957,7 +957,7 @@ export default function GroupView({
                     axisLine={false}
                     tickLine={false}
                     tick={{ fontSize: 10, fill: "#a1a1aa", fontWeight: 500 }}
-                    tickFormatter={(value) => `${CURRENCY_SYMBOL}${value}`}
+                    tickFormatter={(value) => `{CURRENCY_SYMBOL}{value}`}
                   />
                   <Tooltip
                     contentStyle={{
@@ -981,7 +981,7 @@ export default function GroupView({
                       fontWeight: 700,
                     }}
                     formatter={(value: number | undefined) => [
-                      `${CURRENCY_SYMBOL}${formatCurrency(value || 0)}`,
+                      `{CURRENCY_SYMBOL}{formatCurrency(value || 0)}`,
                       "Spent",
                     ]}
                   />
@@ -1033,7 +1033,7 @@ export default function GroupView({
                   </Pie>
                   <Tooltip
                     formatter={(value: number | undefined) => [
-                      `${CURRENCY_SYMBOL}${formatCurrency(value || 0)}`,
+                      `{CURRENCY_SYMBOL}{formatCurrency(value || 0)}`,
                       "Total",
                     ]}
                     contentStyle={{
@@ -1137,7 +1137,7 @@ export default function GroupView({
                       <div className="text-left sm:text-right min-w-0">
                         <p
                           className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white font-mono tracking-tight truncate"
-                          title={`${CURRENCY_SYMBOL}${formatCurrency(expense.amount)}`}
+                          title={`{CURRENCY_SYMBOL}{formatCurrency(expense.amount)}`}
                         >
                           {CURRENCY_SYMBOL}
                           {formatCurrency(expense.amount)}
@@ -1502,7 +1502,7 @@ export default function GroupView({
                       </label>
                       <div className="relative">
                         <span className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 font-mono font-bold">
-                          $
+                          ₹
                         </span>
                         <input
                           type="number"

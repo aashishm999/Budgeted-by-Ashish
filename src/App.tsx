@@ -110,46 +110,46 @@ export default function App() {
           }, { merge: true });
         }
 
-        if (!userSnap.exists()) {
-          try {
-            await setDoc(userRef, {
-              uid: currentUser.uid,
-              displayName: currentUser.displayName,
-              email: currentUser.email,
-              photoURL: currentUser.photoURL,
-              createdAt: serverTimestamp(),
-            });
-          } catch (error) {
-            console.error("Error creating user profile:", error);
-          }
-        } else {
-          const data = userSnap.data();
-          const createdAt = data.createdAt?.toDate();
-          if (createdAt && (Date.now() - createdAt.getTime() > 24 * 60 * 60 * 1000)) {
-            try {
-              // Delete all groups created by this user
-              console.log("Checking for demo data reset...");
-              const groupsQuery = query(collection(db, 'groups'), where('memberIds', 'array-contains', currentUser.uid));
-              const groupsSnap = await getDocs(groupsQuery);
-              console.log(`Found ${groupsSnap.docs.length} groups for user ${currentUser.uid}`);
-              for (const groupDoc of groupsSnap.docs) {
-                if (groupDoc.data().createdBy === currentUser.uid) {
-                  console.log(`Deleting group ${groupDoc.id} due to demo reset`);
-                  await deleteDoc(doc(db, 'groups', groupDoc.id));
-                }
-              }
-              // Reset their createdAt
-              await setDoc(userRef, {
-                ...data,
-                createdAt: serverTimestamp(),
-              });
-              // Show popup
-              setDataDeletedPopup(true);
-            } catch (error) {
-              console.error("Error resetting demo data:", error);
-            }
-          }
-        }
+        // if (!userSnap.exists()) {
+        //   try {
+        //     await setDoc(userRef, {
+        //       uid: currentUser.uid,
+        //       displayName: currentUser.displayName,
+        //       email: currentUser.email,
+        //       photoURL: currentUser.photoURL,
+        //       createdAt: serverTimestamp(),
+        //     });
+        //   } catch (error) {
+        //     console.error("Error creating user profile:", error);
+        //   }
+        // } else {
+        //   const data = userSnap.data();
+        //   const createdAt = data.createdAt?.toDate();
+        //   if (createdAt && (Date.now() - createdAt.getTime() > 24 * 60 * 60 * 1000)) {
+        //     try {
+        //       // Delete all groups created by this user
+        //       console.log("Checking for demo data reset...");
+        //       const groupsQuery = query(collection(db, 'groups'), where('memberIds', 'array-contains', currentUser.uid));
+        //       const groupsSnap = await getDocs(groupsQuery);
+        //       console.log(`Found ${groupsSnap.docs.length} groups for user ${currentUser.uid}`);
+        //       for (const groupDoc of groupsSnap.docs) {
+        //         if (groupDoc.data().createdBy === currentUser.uid) {
+        //           console.log(`Deleting group ${groupDoc.id} due to demo reset`);
+        //           await deleteDoc(doc(db, 'groups', groupDoc.id));
+        //         }
+        //       }
+        //       // Reset their createdAt
+        //       await setDoc(userRef, {
+        //         ...data,
+        //         createdAt: serverTimestamp(),
+        //       });
+        //       // Show popup
+        //       setDataDeletedPopup(true);
+        //     } catch (error) {
+        //       console.error("Error resetting demo data:", error);
+        //     }
+        //   }
+        // }
 
         // Test connection
         const testConnection = async () => {
