@@ -3,29 +3,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
-import { auth, db, signIn, logOut } from './firebase';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { 
-  collection, 
-  query, 
-  onSnapshot, 
-  doc, 
-  setDoc, 
-  serverTimestamp, 
+import React, { useState, useEffect } from "react";
+import { auth, db, signIn, logOut } from "./firebase";
+import { onAuthStateChanged, User } from "firebase/auth";
+import {
+  collection,
+  query,
+  onSnapshot,
+  doc,
+  setDoc,
+  serverTimestamp,
   getDoc,
   getDocs,
   deleteDoc,
   collectionGroup,
-  where
-} from 'firebase/firestore';
-import { 
-  Plus, 
-  LogOut, 
-  LayoutDashboard, 
-  Users, 
-  Receipt, 
-  Settings, 
+  where,
+} from "firebase/firestore";
+import {
+  Plus,
+  LogOut,
+  LayoutDashboard,
+  Users,
+  Receipt,
+  Settings,
   ChevronRight,
   Wallet,
   PieChart,
@@ -37,16 +37,16 @@ import {
   Menu,
   X,
   Sun,
-  Moon
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Group, UserProfile } from './types';
-import { handleFirestoreError, OperationType } from './utils/errorHandling';
+  Moon,
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { Group, UserProfile } from "./types";
+import { handleFirestoreError, OperationType } from "./utils/errorHandling";
 
 // Components
-import Dashboard from './components/Dashboard';
-import GroupView from './components/GroupView';
-import CreateGroupModal from './components/CreateGroupModal';
+import Dashboard from "./components/Dashboard";
+import GroupView from "./components/GroupView";
+import CreateGroupModal from "./components/CreateGroupModal";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -58,25 +58,25 @@ export default function App() {
   const [dataDeletedPopup, setDataDeletedPopup] = useState(false);
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('theme') as 'light' | 'dark') || 'dark';
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("theme") as "light" | "dark") || "dark";
     }
-    return 'dark';
+    return "dark";
   });
 
   useEffect(() => {
     const root = window.document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
+    if (theme === "dark") {
+      root.classList.add("dark");
     } else {
-      root.classList.remove('dark');
+      root.classList.remove("dark");
     }
-    localStorage.setItem('theme', theme);
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
   useEffect(() => {
@@ -91,23 +91,33 @@ export default function App() {
       setUser(currentUser);
       if (currentUser) {
         // Check if user has seen welcome popup
-        const hasSeenWelcome = localStorage.getItem(`hasSeenWelcome_${currentUser.uid}`);
+        const hasSeenWelcome = localStorage.getItem(
+          `hasSeenWelcome_${currentUser.uid}`,
+        );
         if (!hasSeenWelcome) {
           setShowWelcomePopup(true);
         }
 
         // Ensure user profile exists
-        const userRef = doc(db, 'users', currentUser.uid);
+        const userRef = doc(db, "users", currentUser.uid);
         const userSnap = await getDoc(userRef);
-        
+
         // Maintain email lookup for invitations
         if (currentUser.email) {
-          const emailLookupRef = doc(db, 'user_emails', currentUser.email.toLowerCase());
-          await setDoc(emailLookupRef, {
-            uid: currentUser.uid,
-            email: currentUser.email.toLowerCase(),
-            displayName: currentUser.displayName
-          }, { merge: true });
+          const emailLookupRef = doc(
+            db,
+            "user_emails",
+            currentUser.email.toLowerCase(),
+          );
+          await setDoc(
+            emailLookupRef,
+            {
+              uid: currentUser.uid,
+              email: currentUser.email.toLowerCase(),
+              displayName: currentUser.displayName,
+            },
+            { merge: true },
+          );
         }
 
         // if (!userSnap.exists()) {
@@ -154,11 +164,14 @@ export default function App() {
         // Test connection
         const testConnection = async () => {
           try {
-            const { getDocFromServer } = await import('firebase/firestore');
-            await getDocFromServer(doc(db, 'test', 'connection'));
+            const { getDocFromServer } = await import("firebase/firestore");
+            await getDocFromServer(doc(db, "test", "connection"));
             console.log("Firestore connection successful");
           } catch (error) {
-            if (error instanceof Error && error.message.includes('the client is offline')) {
+            if (
+              error instanceof Error &&
+              error.message.includes("the client is offline")
+            ) {
               console.error("Please check your Firebase configuration. ");
             }
             // Skip logging for other errors, as this is simply a connection test.
@@ -179,31 +192,38 @@ export default function App() {
 
     // Query groups where the user is a member using the memberIds array
     const groupsQuery = query(
-      collection(db, 'groups'),
-      where('memberIds', 'array-contains', user.uid)
+      collection(db, "groups"),
+      where("memberIds", "array-contains", user.uid),
     );
 
-    const unsubscribe = onSnapshot(groupsQuery, (snapshot) => {
-      console.log(`Groups snapshot received: ${snapshot.docs.length} groups`);
-      setLastError(null);
-      const fetchedGroups = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Group));
-      setGroups(fetchedGroups);
-    }, (error) => {
-      try {
-        handleFirestoreError(error, OperationType.LIST, 'groups');
-      } catch (e: any) {
-        setLastError(e.message);
-      }
-    });
+    const unsubscribe = onSnapshot(
+      groupsQuery,
+      (snapshot) => {
+        console.log(`Groups snapshot received: ${snapshot.docs.length} groups`);
+        setLastError(null);
+        const fetchedGroups = snapshot.docs.map(
+          (doc) =>
+            ({
+              id: doc.id,
+              ...doc.data(),
+            }) as Group,
+        );
+        setGroups(fetchedGroups);
+      },
+      (error) => {
+        try {
+          handleFirestoreError(error, OperationType.LIST, "groups");
+        } catch (e: any) {
+          setLastError(e.message);
+        }
+      },
+    );
 
     return () => unsubscribe();
   }, [user]);
 
   useEffect(() => {
-    if (selectedGroupId && !groups.find(g => g.id === selectedGroupId)) {
+    if (selectedGroupId && !groups.find((g) => g.id === selectedGroupId)) {
       setSelectedGroupId(null);
     }
   }, [groups, selectedGroupId]);
@@ -211,7 +231,7 @@ export default function App() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300">
-        <motion.div 
+        <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full"
@@ -229,7 +249,7 @@ export default function App() {
           <div className="absolute -bottom-1/4 -right-1/4 w-[80%] h-[80%] bg-fuchsia-600/10 dark:bg-fuchsia-600/20 rounded-full blur-[120px]" />
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md w-full bg-zinc-50/50 dark:bg-white/5 backdrop-blur-2xl p-8 sm:p-12 rounded-[48px] shadow-2xl border border-zinc-200 dark:border-white/10 relative z-10"
@@ -237,13 +257,22 @@ export default function App() {
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-linear-to-br from-indigo-500 to-fuchsia-500 rounded-4xl flex items-center justify-center mx-auto mb-8 sm:mb-10 shadow-2xl shadow-indigo-500/20">
             <Wallet className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4 text-zinc-900 dark:text-white font-display">Budgeted</h1>
-          <p className="text-zinc-500 dark:text-zinc-400 mb-8 sm:mb-12 leading-relaxed text-base sm:text-lg">The professional way to track expenses, split bills, and manage shared budgets.</p>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4 text-zinc-900 dark:text-white font-display">
+            Budgeted
+          </h1>
+          <p className="text-zinc-500 dark:text-zinc-400 mb-8 sm:mb-12 leading-relaxed text-base sm:text-lg">
+            The professional way to track expenses, split bills, and manage
+            shared budgets.
+          </p>
           <button
             onClick={signIn}
             className="w-full py-4 sm:py-5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 rounded-2xl font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-all active:scale-[0.98] flex items-center justify-center gap-4 shadow-xl shadow-zinc-900/10 dark:shadow-white/10 text-base sm:text-lg outline-none focus:ring-4 focus:ring-indigo-500/40"
           >
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" className="w-6 h-6 bg-white rounded-full p-0.5" />
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt=""
+              className="w-6 h-6 bg-white rounded-full p-0.5"
+            />
             Continue with Google
           </button>
         </motion.div>
@@ -254,7 +283,7 @@ export default function App() {
   return (
     <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 font-sans selection:bg-indigo-100 selection:text-indigo-900 relative overflow-hidden transition-colors duration-300">
       {/* Debug Overlay */}
-      {process.env.NODE_ENV !== 'production' && (
+      {process.env.NODE_ENV !== "production" && (
         <div className="fixed bottom-4 right-4 z-100 bg-black/80 text-white p-4 rounded-2xl text-[10px] font-mono max-w-xs pointer-events-none">
           <p className="font-bold mb-1 text-indigo-400">DEBUG INFO</p>
           <p>Groups: {groups.length}</p>
@@ -277,10 +306,12 @@ export default function App() {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <aside className={`
+      <aside
+        className={`
         fixed lg:static inset-y-0 left-0 w-72 bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-white/5 flex flex-col z-50 lg:z-10 transition-all duration-300 ease-in-out overflow-y-auto custom-scrollbar
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+      `}
+      >
         {/* Vibrant background glow */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-10 dark:opacity-20">
           <div className="absolute -top-24 -left-24 w-64 h-64 bg-indigo-600 rounded-full blur-[100px]" />
@@ -293,9 +324,11 @@ export default function App() {
               <div className="w-10 h-10 bg-linear-to-br from-indigo-500 to-fuchsia-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
                 <Wallet className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white font-display">Budgeted</span>
+              <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white font-display">
+                Budgeted
+              </span>
             </div>
-            <button 
+            <button
               onClick={() => setIsSidebarOpen(false)}
               className="lg:hidden p-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
             >
@@ -304,12 +337,12 @@ export default function App() {
           </div>
 
           <nav className="space-y-1.5">
-            <button 
+            <button
               onClick={() => {
                 setSelectedGroupId(null);
                 setIsSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${!selectedGroupId ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 shadow-xl shadow-zinc-900/10 dark:shadow-white/10' : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white'}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${!selectedGroupId ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 shadow-xl shadow-zinc-900/10 dark:shadow-white/10" : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white"}`}
             >
               <LayoutDashboard className="w-5 h-5" />
               <span className="font-bold">Dashboard</span>
@@ -319,8 +352,10 @@ export default function App() {
 
         <div className="flex-1 overflow-y-auto px-4 py-2 relative z-10 custom-scrollbar min-h-50">
           <div className="flex items-center justify-between px-4 mb-4">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500">Your Groups</span>
-            <button 
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500">
+              Your Groups
+            </span>
+            <button
               onClick={() => {
                 setIsCreateModalOpen(true);
                 setIsSidebarOpen(false);
@@ -332,25 +367,33 @@ export default function App() {
           </div>
 
           <div className="space-y-1">
-            {groups.map(group => (
+            {groups.map((group) => (
               <button
                 key={group.id}
                 onClick={() => {
                   setSelectedGroupId(group.id);
                   setIsSidebarOpen(false);
                 }}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group ${selectedGroupId === group.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white'}`}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group ${selectedGroupId === group.id ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white"}`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full transition-transform group-hover:scale-125 ${group.type === 'personal' ? 'bg-blue-400' : group.type === 'household' ? 'bg-emerald-400' : 'bg-orange-400'}`} />
-                  <span className="truncate text-sm font-medium">{group.name}</span>
+                  <div
+                    className={`w-2 h-2 rounded-full transition-transform group-hover:scale-125 ${group.type === "personal" ? "bg-blue-400" : group.type === "household" ? "bg-emerald-400" : "bg-orange-400"}`}
+                  />
+                  <span className="truncate text-sm font-medium">
+                    {group.name}
+                  </span>
                 </div>
-                {selectedGroupId === group.id && <ChevronRight className="w-4 h-4 opacity-70" />}
+                {selectedGroupId === group.id && (
+                  <ChevronRight className="w-4 h-4 opacity-70" />
+                )}
               </button>
             ))}
             {groups.length === 0 && (
               <div className="px-4 py-8 text-center">
-                <p className="text-xs text-zinc-400 dark:text-zinc-600 italic">No groups yet</p>
+                <p className="text-xs text-zinc-400 dark:text-zinc-600 italic">
+                  No groups yet
+                </p>
               </div>
             )}
           </div>
@@ -359,27 +402,46 @@ export default function App() {
         <div className="p-6 mt-auto relative z-10 shrink-0">
           <div className="p-4 bg-zinc-50 dark:bg-white/5 rounded-2xl border border-zinc-200 dark:border-white/10 mb-4 backdrop-blur-md">
             <div className="flex items-center gap-3">
-              <img src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=random`} alt="" className="w-10 h-10 rounded-xl shadow-sm border border-zinc-200 dark:border-white/10" />
+              <img
+                src={
+                  user.photoURL ||
+                  `https://ui-avatars.com/api/?name=${user.displayName}&background=random`
+                }
+                alt=""
+                className="w-10 h-10 rounded-xl shadow-sm border border-zinc-200 dark:border-white/10"
+              />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-zinc-900 dark:text-white truncate">{user.displayName}</p>
-                <p className="text-[10px] text-zinc-500 truncate font-mono">{user.email}</p>
+                <p className="text-sm font-bold text-zinc-900 dark:text-white truncate">
+                  {user.displayName}
+                </p>
+                <p className="text-[10px] text-zinc-500 truncate font-mono">
+                  {user.email}
+                </p>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button 
+            <button
               onClick={logOut}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-zinc-500 dark:text-zinc-400 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-all duration-300 font-bold text-sm"
             >
               <LogOut className="w-4 h-4" />
               Sign Out
             </button>
-            <button 
+            <button
               onClick={toggleTheme}
               className="p-3 rounded-xl text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-white transition-all duration-300"
-              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              title={
+                theme === "dark"
+                  ? "Switch to Light Mode"
+                  : "Switch to Dark Mode"
+              }
             >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
@@ -395,7 +457,7 @@ export default function App() {
             </div>
             <span className="font-bold text-white font-display">Budgeted</span>
           </div>
-          <button 
+          <button
             onClick={() => setIsSidebarOpen(true)}
             className="p-2 text-zinc-400 hover:text-white"
           >
@@ -412,9 +474,9 @@ export default function App() {
               transition={{ duration: 0.3 }}
               className="p-10 max-w-7xl mx-auto"
             >
-              <Dashboard 
-                user={user} 
-                groups={groups} 
+              <Dashboard
+                user={user}
+                groups={groups}
                 onSelectGroup={(id) => {
                   setSelectedGroupId(id);
                   setIsSidebarOpen(false);
@@ -431,10 +493,10 @@ export default function App() {
               transition={{ duration: 0.3 }}
               className="p-10 max-w-7xl mx-auto"
             >
-              <GroupView 
-                groupId={selectedGroupId} 
-                user={user} 
-                onBack={() => setSelectedGroupId(null)} 
+              <GroupView
+                groupId={selectedGroupId}
+                user={user}
+                onBack={() => setSelectedGroupId(null)}
                 theme={theme}
               />
             </motion.div>
@@ -446,9 +508,9 @@ export default function App() {
       <AnimatePresence>
         {dataDeletedPopup && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setDataDeletedPopup(false)}
               className="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm"
@@ -462,10 +524,17 @@ export default function App() {
               <div className="w-20 h-20 bg-orange-50 dark:bg-orange-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-500/20">
                 <Settings className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mb-4 font-display">Demo Data Reset</h3>
+              <h3 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mb-4 font-display">
+                Demo Data Reset
+              </h3>
               <p className="text-zinc-500 dark:text-zinc-400 mb-10 leading-relaxed text-sm">
-                Your data has been deleted because 24 hours have passed since you first signed in. 
-                This is a demo application. If you want your data to persist, please click the <span className="font-bold text-zinc-900 dark:text-white">Remix</span> button to create your own version of the app!
+                Your data has been deleted because 24 hours have passed since
+                you first signed in. This is a demo application. If you want
+                your data to persist, please click the{" "}
+                <span className="font-bold text-zinc-900 dark:text-white">
+                  Remix
+                </span>{" "}
+                button to create your own version of the app!
               </p>
               <button
                 onClick={() => setDataDeletedPopup(false)}
@@ -478,9 +547,9 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <CreateGroupModal 
-        isOpen={isCreateModalOpen} 
-        onClose={() => setIsCreateModalOpen(false)} 
+      <CreateGroupModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
         user={user}
       />
 
@@ -488,13 +557,13 @@ export default function App() {
       <AnimatePresence>
         {showWelcomePopup && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => {
                 setShowWelcomePopup(false);
-                localStorage.setItem(`hasSeenWelcome_${user.uid}`, 'true');
+                localStorage.setItem(`hasSeenWelcome_${user.uid}`, "true");
               }}
               className="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm"
             />
@@ -507,20 +576,22 @@ export default function App() {
               <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20">
                 <LayoutDashboard className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mb-4 font-display">Welcome to the Demo!</h3>
+              <h3 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mb-4 font-display">
+                Welcome to Budgeted!
+              </h3>
               <p className="text-zinc-500 dark:text-zinc-400 mb-10 leading-relaxed text-sm">
-                This is a demo application. To keep the demo fresh, <span className="font-bold text-zinc-900 dark:text-white">all data is automatically deleted every 24 hours</span>.
-                <br /><br />
-                If you want to create your own permanent version, click the <span className="font-bold text-zinc-900 dark:text-white">Remix</span> button in the top right!
+                We're glad to have you here. You can now start tracking your
+                expenses, managing shared budgets, and splitting bills with your
+                groups.
               </p>
               <button
                 onClick={() => {
                   setShowWelcomePopup(false);
-                  localStorage.setItem(`hasSeenWelcome_${user.uid}`, 'true');
+                  localStorage.setItem(`hasSeenWelcome_${user.uid}`, "true");
                 }}
                 className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 active:scale-95"
               >
-                Got it, let's go!
+                Get Started
               </button>
             </motion.div>
           </div>
