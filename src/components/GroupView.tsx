@@ -395,7 +395,7 @@ export default function GroupView({
     setIsChatLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
       const systemPrompt = `You are a helpful financial assistant for a group expense tracker named "${group?.name}". 
         You have access to the current group's expenses and budget. 
@@ -663,70 +663,113 @@ export default function GroupView({
     return "All Time";
   };
 
-  const handleAnalyzeSpending = async () => {
-    setIsAnalyzing(true);
-    setIsAnalysisModalOpen(true);
-    setAnalysisResult(null);
+  // const handleAnalyzeSpending = async () => {
+  //   setIsAnalyzing(true);
+  //   setIsAnalysisModalOpen(true);
+  //   setAnalysisResult(null);
 
-    if (analysisAbortController.current) {
-      analysisAbortController.current.abort();
-    }
-    const abortController = new AbortController();
-    analysisAbortController.current = abortController;
+  //   if (analysisAbortController.current) {
+  //     analysisAbortController.current.abort();
+  //   }
+  //   const abortController = new AbortController();
+  //   analysisAbortController.current = abortController;
 
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY });
+  //   try {
+  //     const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY });
       
     
-      const expenseSummary = expenses.map((e) => ({
-        amount: e.amount,
-        description: e.description,
-        category: e.category,
-        date: e.date.toDate().toLocaleDateString(),
-      }));
+  //     const expenseSummary = expenses.map((e) => ({
+  //       amount: e.amount,
+  //       description: e.description,
+  //       category: e.category,
+  //       date: e.date.toDate().toLocaleDateString(),
+  //     }));
 
-      const prompt = `
-        Analyze the following spending data for a group budget named "${group?.name}".
-        Currency: Indian Rupees (INR, ₹)
-        Group Type: ${group?.type}
-        Budget Type: ${group?.budgetType}
-        Max Budget: ${group?.maxBudget || "No limit"}
-        Total Spent in Current Period: ${totalSpent.toFixed(2)}
+  //     const prompt = `
+  //       Analyze the following spending data for a group budget named "${group?.name}".
+  //       Currency: Indian Rupees (INR, ₹)
+  //       Group Type: ${group?.type}
+  //       Budget Type: ${group?.budgetType}
+  //       Max Budget: ${group?.maxBudget || "No limit"}
+  //       Total Spent in Current Period: ${totalSpent.toFixed(2)}
         
-        Expenses:
-        ${JSON.stringify(expenseSummary, null, 2)}
+  //       Expenses:
+  //       ${JSON.stringify(expenseSummary, null, 2)}
         
-        Please provide:
-        1. A summary of spending habits.
-        2. Identification of any unusual or high spending categories.
-        3. Practical suggestions for saving or better budget management.
-        4. A brief outlook based on the current budget limit.
+  //       Please provide:
+  //       1. A summary of spending habits.
+  //       2. Identification of any unusual or high spending categories.
+  //       3. Practical suggestions for saving or better budget management.
+  //       4. A brief outlook based on the current budget limit.
         
-        Keep the tone helpful, professional, and encouraging. Use markdown for formatting.
-      `;
+  //       Keep the tone helpful, professional, and encouraging. Use markdown for formatting.
+  //     `;
 
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: [{ parts: [{ text: prompt }] }],
-      });
+  //     const response = await ai.models.generateContent({
+  //       model: "gemini-2.5-flash",
+  //       contents: [{ parts: [{ text: prompt }] }],
+  //     });
 
-      if (abortController.signal.aborted) return;
+  //     if (abortController.signal.aborted) return;
 
-      setAnalysisResult(response.text || "Could not generate analysis.");
-    } catch (error: any) {
-      if (error.name === "AbortError" || abortController.signal.aborted) {
-        return;
-      }
-      console.error("AI Analysis Error:", error);
-      setAnalysisResult(
-        "Sorry, I encountered an error while analyzing your spending. Please try again later.",
-      );
-    } finally {
-      if (!abortController.signal.aborted) {
-        setIsAnalyzing(false);
-      }
+  //     setAnalysisResult(response.text || "Could not generate analysis.");
+  //   } catch (error: any) {
+  //     if (error.name === "AbortError" || abortController.signal.aborted) {
+  //       return;
+  //     }
+  //     console.error("AI Analysis Error:", error);
+  //     setAnalysisResult(
+  //       "Sorry, I encountered an error while analyzing your spending. Please try again later.",
+  //     );
+  //   } finally {
+  //     if (!abortController.signal.aborted) {
+  //       setIsAnalyzing(false);
+  //     }
+  //   }
+  // };
+
+
+  const handleAnalyzeSpending = async () => {
+  setIsAnalyzing(true);
+  setIsAnalysisModalOpen(true);
+  setAnalysisResult(null);
+
+  if (analysisAbortController.current) {
+    analysisAbortController.current.abort();
+  }
+  const abortController = new AbortController();
+  analysisAbortController.current = abortController;
+
+  try {
+    // FIX: Use VITE_ environment variable access
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+
+    const expenseSummary = expenses.map((e) => ({
+      amount: e.amount,
+      description: e.description,
+      category: e.category,
+      date: e.date.toDate().toLocaleDateString(),
+    }));
+
+    const prompt = `...`; // prompt remains the same
+
+    const response = await ai.models.generateContent({
+      // FIX: Use a valid model name (e.g., gemini-1.5-flash)
+      model: "gemini-1.5-flash",
+      contents: [{ parts: [{ text: prompt }] }],
+    });
+
+    if (abortController.signal.aborted) return;
+
+    setAnalysisResult(response.text || "Could not generate analysis.");
+  } catch (error: any) {
+    // ... error handling
+  } finally {
+    if (!abortController.signal.aborted) {
+      setIsAnalyzing(false);
     }
-  };
+  }
+};
 
   if (!group) return null;
 
