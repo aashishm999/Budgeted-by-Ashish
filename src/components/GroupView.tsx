@@ -755,7 +755,7 @@ export default function GroupView({
 
     const response = await ai.models.generateContent({
       // FIX: Use a valid model name (e.g., gemini-1.5-flash)
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash",
       contents: [{ parts: [{ text: prompt }] }],
     });
 
