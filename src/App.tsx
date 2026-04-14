@@ -524,17 +524,12 @@ export default function App() {
               <div className="w-20 h-20 bg-orange-50 dark:bg-orange-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-500/20">
                 <Settings className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mb-4 font-display">
-                Demo Data Reset
-              </h3>
+              
               <p className="text-zinc-500 dark:text-zinc-400 mb-10 leading-relaxed text-sm">
-                Your data has been deleted because 24 hours have passed since
-                you first signed in. This is a demo application. If you want
-                your data to persist, please click the{" "}
-                <span className="font-bold text-zinc-900 dark:text-white">
-                  Remix
-                </span>{" "}
-                button to create your own version of the app!
+                Your journey to financial clarity starts here. 
+                We have set up your dashboard so you can begin tracking your spending immediately.{" "}
+                
+                Set a Monthly Budget to keep your goals on track.
               </p>
               <button
                 onClick={() => setDataDeletedPopup(false)}
