@@ -395,7 +395,9 @@ export default function GroupView({
     setIsChatLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+      const ai = new GoogleGenAI({
+        apiKey: import.meta.env.VITE_GEMINI_API_KEY,
+      });
 
       const systemPrompt = `You are a helpful financial assistant for a group expense tracker named "${group?.name}". 
         You have access to the current group's expenses and budget. 
@@ -676,8 +678,7 @@ export default function GroupView({
 
   //   try {
   //     const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY });
-      
-    
+
   //     const expenseSummary = expenses.map((e) => ({
   //       amount: e.amount,
   //       description: e.description,
@@ -692,16 +693,16 @@ export default function GroupView({
   //       Budget Type: ${group?.budgetType}
   //       Max Budget: ${group?.maxBudget || "No limit"}
   //       Total Spent in Current Period: ${totalSpent.toFixed(2)}
-        
+
   //       Expenses:
   //       ${JSON.stringify(expenseSummary, null, 2)}
-        
+
   //       Please provide:
   //       1. A summary of spending habits.
   //       2. Identification of any unusual or high spending categories.
   //       3. Practical suggestions for saving or better budget management.
   //       4. A brief outlook based on the current budget limit.
-        
+
   //       Keep the tone helpful, professional, and encouraging. Use markdown for formatting.
   //     `;
 
@@ -728,48 +729,49 @@ export default function GroupView({
   //   }
   // };
 
-
   const handleAnalyzeSpending = async () => {
-  setIsAnalyzing(true);
-  setIsAnalysisModalOpen(true);
-  setAnalysisResult(null);
+    setIsAnalyzing(true);
+    setIsAnalysisModalOpen(true);
+    setAnalysisResult(null);
 
-  if (analysisAbortController.current) {
-    analysisAbortController.current.abort();
-  }
-  const abortController = new AbortController();
-  analysisAbortController.current = abortController;
-
-  try {
-    // FIX: Use VITE_ environment variable access
-    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
-
-    const expenseSummary = expenses.map((e) => ({
-      amount: e.amount,
-      description: e.description,
-      category: e.category,
-      date: e.date.toDate().toLocaleDateString(),
-    }));
-
-    const prompt = `...`; // prompt remains the same
-
-    const response = await ai.models.generateContent({
-      // FIX: Use a valid model name (e.g., gemini-1.5-flash)
-      model: "gemini-2.0-flash",
-      contents: [{ parts: [{ text: prompt }] }],
-    });
-
-    if (abortController.signal.aborted) return;
-
-    setAnalysisResult(response.text || "Could not generate analysis.");
-  } catch (error: any) {
-    // ... error handling
-  } finally {
-    if (!abortController.signal.aborted) {
-      setIsAnalyzing(false);
+    if (analysisAbortController.current) {
+      analysisAbortController.current.abort();
     }
-  }
-};
+    const abortController = new AbortController();
+    analysisAbortController.current = abortController;
+
+    try {
+      // FIX: Use VITE_ environment variable access
+      const ai = new GoogleGenAI({
+        apiKey: import.meta.env.VITE_GEMINI_API_KEY,
+      });
+
+      const expenseSummary = expenses.map((e) => ({
+        amount: e.amount,
+        description: e.description,
+        category: e.category,
+        date: e.date.toDate().toLocaleDateString(),
+      }));
+
+      const prompt = `...`; // prompt remains the same
+
+      const response = await ai.models.generateContent({
+        // FIX: Use a valid model name (e.g., gemini-1.5-flash)
+        model: "gemini-2.0-flash",
+        contents: [{ parts: [{ text: prompt }] }],
+      });
+
+      if (abortController.signal.aborted) return;
+
+      setAnalysisResult(response.text || "Could not generate analysis.");
+    } catch (error: any) {
+      // ... error handling
+    } finally {
+      if (!abortController.signal.aborted) {
+        setIsAnalyzing(false);
+      }
+    }
+  };
 
   if (!group) return null;
 
@@ -1002,9 +1004,9 @@ export default function GroupView({
                     axisLine={false}
                     tickLine={false}
                     tick={{ fontSize: 10, fill: "#a1a1aa", fontWeight: 500 }}
-                    tickFormatter={(value) => `{CURRENCY_SYMBOL}{value}`}
+                    tickFormatter={(value) => `${CURRENCY_SYMBOL}${value}`}
                   />
-                  <Tooltip
+                  {/* <Tooltip
                     contentStyle={{
                       borderRadius: "16px",
                       border: "none",
@@ -1029,7 +1031,36 @@ export default function GroupView({
                       `{CURRENCY_SYMBOL}{formatCurrency(value || 0)}`,
                       "Spent",
                     ]}
+                  /> */}
+
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: "16px",
+                      border: "none",
+                      boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)",
+                      padding: "12px",
+                      backgroundColor: theme === "dark" ? "#18181b" : "#ffffff",
+                      color: theme === "dark" ? "#ffffff" : "#18181b",
+                    }}
+                    itemStyle={{
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      color: theme === "dark" ? "#ffffff" : "#18181b",
+                    }}
+                    labelStyle={{
+                      fontSize: "10px",
+                      color: "#71717a",
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      fontWeight: 700,
+                    }}
+                    // Added proper type casting to the value and fixed the template literal
+                    formatter={(value: any) => [
+                      `${CURRENCY_SYMBOL}${formatCurrency(Number(value) || 0)}`,
+                      "Spent",
+                    ]}
                   />
+
                   <Line
                     type="monotone"
                     dataKey="amount"
