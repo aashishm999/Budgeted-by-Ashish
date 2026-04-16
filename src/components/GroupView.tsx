@@ -405,12 +405,12 @@ export default function GroupView({
         Be concise, professional, and friendly.
         
         Current Context:
-        - Total Spent: {CURRENCY_SYMBOL}${formatCurrency(totalSpent)}
-        - Max Budget: ${group?.maxBudget ? `{CURRENCY_SYMBOL}${formatCurrency(group.maxBudget)} (${group.budgetType})` : "No limit"}
+        - Total Spent: ${CURRENCY_SYMBOL}${formatCurrency(totalSpent)}
+        - Max Budget: ${group?.maxBudget ? `${CURRENCY_SYMBOL}${formatCurrency(group.maxBudget)} (${group.budgetType})` : "No limit"}
         - Categories: ${Object.entries(categoryTotals)
           .map(
             ([cat, amount]) =>
-              `${cat}: {CURRENCY_SYMBOL}${formatCurrency(amount)}`,
+              `${cat}: ${CURRENCY_SYMBOL}${formatCurrency(amount)}`,
           )
           .join(", ")}
         - Recent Expenses: ${expenses
@@ -880,7 +880,7 @@ export default function GroupView({
             </p>
             <p
               className="text-4xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-zinc-900 dark:text-white font-display tracking-tight truncate"
-              title={`{CURRENCY_SYMBOL}{formatCurrency(totalSpent)}`}
+              title={`${CURRENCY_SYMBOL}${formatCurrency(totalSpent)}`}
             >
               {CURRENCY_SYMBOL}
               {formatCurrency(totalSpent)}
@@ -935,7 +935,7 @@ export default function GroupView({
             </p>
             <p
               className="text-4xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-zinc-900 dark:text-white font-display tracking-tight truncate"
-              title={`{CURRENCY_SYMBOL}{formatCurrency(perPerson)}`}
+              title={`${CURRENCY_SYMBOL}${formatCurrency(perPerson)}`}
             >
               {CURRENCY_SYMBOL}
               {formatCurrency(perPerson)}
@@ -964,7 +964,7 @@ export default function GroupView({
             </p>
             <p
               className={`text-4xl md:text-2xl lg:text-3xl xl:text-4xl font-bold font-display tracking-tight truncate ${balance >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}
-              title={`{CURRENCY_SYMBOL}{formatCurrency(Math.abs(balance))}`}
+              title={`${CURRENCY_SYMBOL}${formatCurrency(Math.abs(balance))}`}
             >
               {CURRENCY_SYMBOL}
               {formatCurrency(Math.abs(balance))}
@@ -1109,7 +1109,7 @@ export default function GroupView({
                   </Pie>
                   <Tooltip
                     formatter={(value: number | undefined) => [
-                      `{CURRENCY_SYMBOL}{formatCurrency(value || 0)}`,
+                      `${CURRENCY_SYMBOL}${formatCurrency(value || 0)}`,
                       "Total",
                     ]}
                     contentStyle={{
@@ -1213,7 +1213,7 @@ export default function GroupView({
                       <div className="text-left sm:text-right min-w-0">
                         <p
                           className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white font-mono tracking-tight truncate"
-                          title={`{CURRENCY_SYMBOL}{formatCurrency(expense.amount)}`}
+                          title={`${CURRENCY_SYMBOL}${formatCurrency(expense.amount)}`}
                         >
                           {CURRENCY_SYMBOL}
                           {formatCurrency(expense.amount)}
@@ -1637,7 +1637,7 @@ export default function GroupView({
         )}
       </AnimatePresence>
 
-      {/* AI Analysis Modal */}
+      {/* AI Analysis Modal
       <AnimatePresence>
         {isAnalysisModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -1702,7 +1702,78 @@ export default function GroupView({
             </motion.div>
           </div>
         )}
+      </AnimatePresence> */}
+
+      <AnimatePresence>
+        {isAnalysisModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeAnalysisModal}
+              className="absolute inset-0 bg-zinc-900/60 backdrop-blur-md"
+            />
+
+            {/* Modal Content */}
+            <motion.div
+              ref={analysisModalRef}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-4xl shadow-2xl p-8 md:p-10 max-h-[85vh] overflow-y-auto outline-none border border-zinc-200 dark:border-zinc-800"
+            >
+              <div className="flex items-start justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3
+                      id="analysis-title"
+                      className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white font-display"
+                    >
+                      Spending Analysis
+                    </h3>
+                    <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+                      AI insights for {group.name}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {isAnalyzing ? (
+                <div className="py-16 flex flex-col items-center justify-center gap-6">
+                  <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+                  <p className="font-bold text-xs uppercase tracking-widest text-zinc-400 animate-pulse">
+                    Crunching the numbers...
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-3xl p-6 md:p-8 border border-zinc-200 dark:border-zinc-700">
+                    <div className="prose prose-zinc dark:prose-invert max-w-none">
+                      <Markdown>
+                        {analysisResult ||
+                          "No analysis available at this time."}
+                      </Markdown>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={closeAnalysisModal}
+                    className="w-full py-4 bg-zinc-900 dark:bg-indigo-600 text-white rounded-2xl font-bold hover:bg-zinc-800 dark:hover:bg-indigo-700 transition-all shadow-xl active:scale-95"
+                  >
+                    Back to Expenses
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
       </AnimatePresence>
+
       {/* Delete Group Confirmation Modal */}
       <AnimatePresence>
         {isDeleteGroupConfirmOpen && (
